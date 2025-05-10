@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -24,10 +25,11 @@ public class VehiculoServiceImpl implements VehiculoService {
   
     @Override
     public VehiculoDTO registrarIngreso(VehiculoDTO dto) {
-        Vehiculo vehiculo = new Vehiculo();
+    	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    	VehiculoDTO vehiculo = new VehiculoDTO();
         vehiculo.setPlaca(dto.getPlaca());
         vehiculo.setTipo(dto.getTipo());
-        vehiculo.setHoraIngreso(LocalDateTime.now());
+        vehiculo.setHoraIngreso(LocalDateTime.now().format(formatter));
 
         vehiculoRepository.save(vehiculo);
 
@@ -42,14 +44,16 @@ public class VehiculoServiceImpl implements VehiculoService {
 
     @Override
     public Map<String, Object> registrarSalida(String placa) {
-        Vehiculo vehiculo = vehiculoRepository.findByPlaca(placa).orElse(null);
+        VehiculoDTO vehiculo = vehiculoRepository.buscarVehiculo(placa);
 
         if (vehiculo == null) {
             throw new RuntimeException("Vehículo no encontrado");
         }
 
         LocalDateTime horaSalida = LocalDateTime.now();
-        Duration duracion = Duration.between(vehiculo.getHoraIngreso(), horaSalida);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime fechaHora = LocalDateTime.parse(vehiculo.getHoraIngreso(), formatter);
+        Duration duracion = Duration.between(fechaHora, horaSalida);
         long minutos = duracion.toMinutes();
         long costo = minutos * COSTO_POR_MINUTO;
 
@@ -67,10 +71,10 @@ public class VehiculoServiceImpl implements VehiculoService {
     }
     @Override
     public List<VehiculoDTO> obtenerVehiculosEnParqueadero() {
-        List<Vehiculo> vehiculos = vehiculoRepository.findAll();
+        List<VehiculoDTO> vehiculos = vehiculoRepository.findAll();
         List<VehiculoDTO> respuesta = new ArrayList<>();
 
-        for (Vehiculo vehiculo : vehiculos) {
+        for (VehiculoDTO vehiculo : vehiculos) {
             VehiculoDTO dto = new VehiculoDTO();
             dto.setPlaca(vehiculo.getPlaca());
             dto.setTipo(vehiculo.getTipo());
@@ -83,7 +87,7 @@ public class VehiculoServiceImpl implements VehiculoService {
     
     @Override
     public List<VehiculoDTO> listarVehiculos() {
-        List<Vehiculo> vehiculos = vehiculoRepository.findAll();
+        List<VehiculoDTO> vehiculos = vehiculoRepository.findAll();
         return vehiculos.stream().map(v -> {
             VehiculoDTO dto = new VehiculoDTO();
             dto.setPlaca(v.getPlaca());
@@ -91,6 +95,11 @@ public class VehiculoServiceImpl implements VehiculoService {
             dto.setHoraIngreso(v.getHoraIngreso());
             return dto;
         }).collect(Collectors.toList());
+    }
+    
+    @Override
+    public VehiculoDTO buscarVehiculo(String placa) {
+    	return vehiculoRepository.buscarVehiculo(placa);
     }
 
 

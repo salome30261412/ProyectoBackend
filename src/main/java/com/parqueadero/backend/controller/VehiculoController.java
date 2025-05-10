@@ -28,13 +28,18 @@ public class VehiculoController {
     }
 
     @PostMapping("/salida")
-    public ResponseEntity<Map<String, Object>> registrarSalida(@RequestBody SalidaVehiculoDTO dto) {
-        Map<String, Object> resultado = vehiculoService.registrarSalida(dto.getPlaca());
+    public ResponseEntity<Map<String, Object>> registrarSalida(@RequestBody String placa) {
+        Map<String, Object> resultado = vehiculoService.registrarSalida(placa);
         return ResponseEntity.ok(resultado);
     }
     @GetMapping("/parqueadero")
     public ResponseEntity<List<VehiculoDTO>> obtenerVehiculosEnParqueadero() {
         return ResponseEntity.ok(vehiculoService.obtenerVehiculosEnParqueadero());
+    }
+    
+    @GetMapping("/parqueadero/{placa}")
+    public ResponseEntity<VehiculoDTO> buscarVehiculo(@PathVariable String placa) {
+        return ResponseEntity.ok(vehiculoService.buscarVehiculo(placa));
     }
 
     @GetMapping("/todos")

@@ -11,4 +11,5 @@ public interface VehiculoService {
     Map<String, Object> registrarSalida(String placa);
     List<VehiculoDTO> obtenerVehiculosEnParqueadero();
     List<VehiculoDTO> listarVehiculos();
+    VehiculoDTO buscarVehiculo(String placa);
 }

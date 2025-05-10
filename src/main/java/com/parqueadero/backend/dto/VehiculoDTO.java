@@ -5,11 +5,11 @@ import java.time.LocalDateTime;
 public class VehiculoDTO {
     private String placa;
     private String tipo;
-    private LocalDateTime horaIngreso; // ✅ agrega este campo
+    private String horaIngreso; // ✅ agrega este campo
 
     public VehiculoDTO() {}
 
-    public VehiculoDTO(String placa, String tipo, LocalDateTime horaIngreso) {
+    public VehiculoDTO(String placa, String tipo, String horaIngreso) {
         this.placa = placa;
         this.tipo = tipo;
         this.horaIngreso = horaIngreso;
@@ -31,11 +31,11 @@ public class VehiculoDTO {
         this.tipo = tipo;
     }
 
-    public LocalDateTime getHoraIngreso() {
+    public String getHoraIngreso() {
         return horaIngreso;
     }
 
-    public void setHoraIngreso(LocalDateTime horaIngreso) {
+    public void setHoraIngreso(String horaIngreso) {
         this.horaIngreso = horaIngreso;
     }
 }
